@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Text Detector</title>
+  <title>ScriptSense — AI Text Detector</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
+      font-family: 'Segoe UI', sans-serif;
       background: #0a0a0f;
       color: #e0e0e0;
-      font-family: 'Segoe UI', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -19,355 +19,268 @@
       padding: 40px 20px;
     }
 
-    .header { text-align: center; margin-bottom: 36px; }
-    .header h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
+    /* ── Brand Header ── */
+    .brand {
+      text-align: center;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .brand-name {
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: 4px;
       background: linear-gradient(135deg, #a78bfa, #60a5fa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      letter-spacing: 2px;
     }
-    .header p { color: #6b7280; font-size: 0.9rem; margin-top: 6px; letter-spacing: 1px; }
+    .brand-tag {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      color: #4b5563;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    .brand-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, #7c3aed, #60a5fa);
+      margin: 14px auto 0;
+      border-radius: 999px;
+    }
 
-    .card {
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Card ── */
+    .container {
       background: #13131a;
       border: 1px solid #1f1f2e;
       border-radius: 20px;
-      padding: 36px;
-      width: 100%;
-      max-width: 680px;
-      box-shadow: 0 0 60px rgba(139,92,246,0.08);
+      padding: 40px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 60px rgba(124, 58, 237, 0.12);
+      animation: fadeUp 0.7s ease 0.1s both;
     }
 
-    .tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+    /* ── Inner heading ── */
+    .inner-heading {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .inner-heading h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #e0e0e0;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #4b5563;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      background: #0d0d14;
+      border: 1px solid #1f1f2e;
+      border-radius: 12px;
+      padding: 6px;
+    }
     .tab {
-      flex: 1; padding: 10px; border-radius: 10px;
-      border: 1px solid #1f1f2e; background: transparent;
-      color: #6b7280; font-size: 0.9rem; cursor: pointer;
-      transition: all 0.2s; font-weight: 600; letter-spacing: 0.5px;
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
     }
     .tab.active {
-      background: linear-gradient(135deg, #7c3aed22, #2563eb22);
-      border-color: #7c3aed; color: #a78bfa;
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      color: #fff;
+      box-shadow: 0 0 14px #7c3aed55;
     }
+    .tab:not(.active):hover { color: #a78bfa; }
 
+    /* ── Tab content ── */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
+    /* ── Drop zone ── */
     .drop-zone {
-      border: 2px dashed #1f1f2e; border-radius: 14px;
-      padding: 48px 24px; text-align: center; cursor: pointer;
-      transition: all 0.3s; position: relative;
+      border: 2px dashed #1f1f2e;
+      border-radius: 14px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+      margin-bottom: 16px;
+      background: #0d0d14;
     }
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color: #7c3aed; background: #7c3aed0d;
+    .drop-zone:hover {
+      border-color: #7c3aed;
+      background: #7c3aed0a;
     }
-    .drop-zone input[type="file"] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    .drop-zone .icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .drop-zone p {
+      color: #4b5563;
+      font-size: 0.82rem;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
     }
-    .drop-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .drop-zone p { color: #6b7280; font-size: 0.9rem; }
-    .drop-zone .file-name { margin-top: 10px; color: #a78bfa; font-size: 0.85rem; font-weight: 600; }
+    .drop-zone p.hint { color: #374151; font-size: 0.75rem; margin-top: 6px; }
 
+    #fileName {
+      text-align: center;
+      font-size: 0.82rem;
+      color: #a78bfa;
+      margin-bottom: 14px;
+      min-height: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Textarea ── */
     textarea {
-      width: 100%; height: 180px; background: #0d0d14;
-      border: 1px solid #1f1f2e; border-radius: 14px;
-      color: #e0e0e0; font-size: 0.92rem; padding: 16px;
-      resize: vertical; outline: none; font-family: 'Segoe UI', sans-serif;
+      width: 100%;
+      height: 180px;
+      background: #0d0d14;
+      border: 1px solid #1f1f2e;
+      border-radius: 12px;
+      padding: 14px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      resize: vertical;
+      margin-bottom: 16px;
       transition: border-color 0.2s;
     }
-    textarea:focus { border-color: #7c3aed; }
+    textarea:focus { outline: none; border-color: #7c3aed; }
+    textarea::placeholder { color: #374151; }
 
+    /* ── Button ── */
     .btn {
-      margin-top: 20px; width: 100%; padding: 16px; border: none;
-      border-radius: 14px; background: linear-gradient(135deg, #7c3aed, #2563eb);
-      color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer;
-      letter-spacing: 1px; transition: opacity 0.2s, transform 0.2s;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 20px #7c3aed44;
     }
-    .btn:hover { opacity: 0.88; transform: translateY(-2px); }
-
-    /* ── SCANNER OVERLAY ── */
-    #scanOverlay {
-      position: fixed; inset: 0; background: #0a0a0f;
-      z-index: 9999; display: none; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 28px; overflow: hidden;
-    }
-    #scanOverlay.active { display: flex; }
-
-    .scan-grid {
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(124,58,237,0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,58,237,0.07) 1px, transparent 1px);
-      background-size: 40px 40px;
-      animation: gridPulse 3s ease-in-out infinite;
-      pointer-events: none;
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 0 28px #7c3aed66;
     }
 
-    .laser-line {
-      position: absolute; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg,
-        transparent 0%, rgba(124,58,237,0.4) 20%,
-        rgba(167,139,250,1) 50%, rgba(96,165,250,0.4) 80%, transparent 100%);
-      box-shadow: 0 0 18px 4px rgba(167,139,250,0.6);
-      animation: laserSweep 2s ease-in-out infinite;
-      pointer-events: none;
-    }
+    input[type="file"] { display: none; }
 
-    .corners { position: absolute; width: 320px; height: 320px; pointer-events: none; }
-    .corners span {
-      position: absolute; width: 28px; height: 28px;
-      border-color: #7c3aed; border-style: solid; opacity: 0.7;
-    }
-    .corners span:nth-child(1) { top:0; left:0; border-width: 3px 0 0 3px; }
-    .corners span:nth-child(2) { top:0; right:0; border-width: 3px 3px 0 0; }
-    .corners span:nth-child(3) { bottom:0; left:0; border-width: 0 0 3px 3px; }
-    .corners span:nth-child(4) { bottom:0; right:0; border-width: 0 3px 3px 0; }
-
-    .scan-title {
-      font-size: 1.7rem; font-weight: 900;
-      background: linear-gradient(135deg, #a78bfa, #60a5fa);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      letter-spacing: 6px; z-index: 1;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-    .scan-subtitle {
-      font-size: 0.75rem; color: #4b5563;
-      letter-spacing: 3px; z-index: 1; margin-top: -20px;
-    }
-
-    .dual-ring { position: relative; width: 110px; height: 110px; z-index: 1; }
-    .dual-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .dual-ring .ring-outer { animation: spinCW 2s linear infinite; }
-    .dual-ring .ring-inner { animation: spinCCW 1.4s linear infinite; }
-    .dual-ring .ring-outer circle {
-      fill: none; stroke: url(#grad1); stroke-width: 3.5;
-      stroke-dasharray: 240; stroke-dashoffset: 60; stroke-linecap: round;
-      filter: drop-shadow(0 0 6px #7c3aed);
-    }
-    .dual-ring .ring-inner circle {
-      fill: none; stroke: url(#grad2); stroke-width: 2;
-      stroke-dasharray: 140; stroke-dashoffset: 40; stroke-linecap: round;
-      filter: drop-shadow(0 0 4px #60a5fa);
-    }
-    .dual-ring .center-dot {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 14px; height: 14px; border-radius: 50%;
-      background: radial-gradient(circle, #a78bfa, #7c3aed);
-      box-shadow: 0 0 16px 4px rgba(167,139,250,0.8);
-      animation: dotPulse 1s ease-in-out infinite;
-    }
-
-    .terminal {
-      width: 400px; background: #0d0d14; border: 1px solid #1f1f2e;
-      border-radius: 14px; padding: 18px 20px;
-      font-family: 'Courier New', monospace; font-size: 0.78rem;
-      color: #a78bfa; min-height: 140px; z-index: 1; overflow: hidden;
-    }
-    .terminal::before {
-      content: '● ● ●'; display: block; color: #2d2d3a;
-      font-size: 0.7rem; margin-bottom: 10px; letter-spacing: 4px;
-    }
-    .terminal .line { margin-bottom: 5px; white-space: nowrap; overflow: hidden; }
-    .terminal .line.green { color: #34d399; }
-    .terminal .line.blue  { color: #60a5fa; }
-    .terminal .line.amber { color: #fcd34d; }
-
-    .progress-wrap { width: 400px; z-index: 1; }
-    .progress-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.78rem; color: #6b7280; margin-bottom: 8px;
-    }
-    .progress-bg {
-      background: #1f1f2e; border-radius: 999px; height: 8px;
-      overflow: hidden; box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
-    }
-    .progress-fill {
-      height: 100%; border-radius: 999px;
-      background: linear-gradient(90deg, #7c3aed, #2563eb, #a78bfa, #7c3aed);
-      background-size: 300% 100%;
-      animation: shimmer 1.5s linear infinite;
-      transition: width 0.4s ease; width: 0%;
-      box-shadow: 0 0 12px rgba(124,58,237,0.8);
-    }
-
-    @keyframes spinCW    { to { transform: rotate(360deg); } }
-    @keyframes spinCCW   { to { transform: rotate(-360deg); } }
-    @keyframes pulse     { 0%,100%{opacity:1;} 50%{opacity:0.45;} }
-    @keyframes dotPulse  { 0%,100%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.4);} }
-    @keyframes shimmer   { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
-    @keyframes gridPulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
-    @keyframes laserSweep {
-      0%   { top: -2px; opacity: 0; }
-      5%   { opacity: 1; }
-      95%  { opacity: 1; }
-      100% { top: 100%; opacity: 0; }
+    /* ── Footer ── */
+    .footer {
+      margin-top: 24px;
+      font-size: 0.7rem;
+      color: #1f1f2e;
+      letter-spacing: 2px;
+      text-align: center;
+      text-transform: uppercase;
+      animation: fadeUp 0.8s ease 0.2s both;
     }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>🔍 AI Text Detector</h1>
-    <p>Powered by a C-based linguistic analysis engine</p>
+  <!-- Brand Header -->
+  <div class="brand">
+    <div class="brand-name">⚡ ScriptSense</div>
+    <div class="brand-tag">C-Based Linguistic Analysis Engine v1.0</div>
+    <div class="brand-divider"></div>
   </div>
 
-  <div class="card">
+  <!-- Main Card -->
+  <div class="container">
+
+    <div class="inner-heading">
+      <h2>🤖 AI Text Detector</h2>
+    </div>
+    <p class="subtitle">Detect machine-generated content instantly</p>
+
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('upload', this)">📂 Upload File</button>
-      <button class="tab"        onclick="switchTab('paste',  this)">✏️ Paste Text</button>
+      <button class="tab active" onclick="switchTab('upload', this)">📁 Upload File</button>
+      <button class="tab"        onclick="switchTab('paste',  this)">📝 Paste Text</button>
     </div>
 
-    <form id="mainForm" action="/analyze" method="POST" enctype="multipart/form-data"
-          onsubmit="startScan(event)">
-
-      <div class="tab-content active" id="tab-upload">
-        <div class="drop-zone" id="dropZone">
-          <input type="file" name="file" accept=".txt" id="fileInput"
-                 onchange="showFileName(this)"/>
-          <div class="drop-icon">📄</div>
-          <p>Drag & drop a <strong>.txt</strong> file here<br/>or click to browse</p>
-          <div class="file-name" id="fileName"></div>
+    <!-- Upload Tab -->
+    <div id="upload" class="tab-content active">
+      <form action="/analyze" method="POST" enctype="multipart/form-data">
+        <div class="drop-zone"
+          onclick="document.getElementById('fileInput').click()"
+          ondragover="event.preventDefault()"
+          ondrop="handleDrop(event)">
+          <div class="icon">📄</div>
+          <p>Click to browse or drag &amp; drop</p>
+          <p class="hint">Supports &nbsp;.txt &nbsp;.pdf &nbsp;.docx</p>
         </div>
-      </div>
+        <input type="file" id="fileInput" name="file" accept=".txt,.pdf,.docx"
+          onchange="showFileName(this)">
+        <div id="fileName">No file chosen</div>
+        <button type="submit" class="btn">🔍 &nbsp;Analyse Text</button>
+      </form>
+    </div>
 
-      <div class="tab-content" id="tab-paste">
+    <!-- Paste Tab -->
+    <div id="paste" class="tab-content">
+      <form action="/analyze" method="POST" enctype="multipart/form-data">
         <textarea name="text" placeholder="Paste your text here..."></textarea>
-      </div>
+        <button type="submit" class="btn">🔍 &nbsp;Analyse Text</button>
+      </form>
+    </div>
 
-      <button type="submit" class="btn">⚡ Analyse Text</button>
-    </form>
   </div>
 
-  <!-- SCANNER OVERLAY -->
-  <div id="scanOverlay">
-    <div class="scan-grid"></div>
-    <div class="laser-line"></div>
-    <div class="corners">
-      <span></span><span></span><span></span><span></span>
-    </div>
-
-    <div class="scan-title">SCANNING DOCUMENT</div>
-    <div class="scan-subtitle">C-BASED LINGUISTIC ANALYSIS ENGINE v1.0</div>
-
-    <div class="dual-ring">
-      <svg class="ring-outer" viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stop-color="#7c3aed"/>
-            <stop offset="100%" stop-color="#a78bfa"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="44"/>
-      </svg>
-      <svg class="ring-inner" viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stop-color="#2563eb"/>
-            <stop offset="100%" stop-color="#60a5fa"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="30"/>
-      </svg>
-      <div class="center-dot"></div>
-    </div>
-
-    <div class="terminal" id="terminalLog"></div>
-
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>Processing</span>
-        <span id="progressPct">0%</span>
-      </div>
-      <div class="progress-bg">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </div>
-  </div>
+  <!-- Footer -->
+  <div class="footer">ScriptSense &mdash; Powered by a C-based engine</div>
 
   <script>
-    function switchTab(name, btn) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    function switchTab(tab, btn) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-' + name).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
       btn.classList.add('active');
     }
 
     function showFileName(input) {
-      document.getElementById('fileName').textContent =
-        input.files[0] ? '📎 ' + input.files[0].name : '';
+      const name = input.files[0] ? input.files[0].name : 'No file chosen';
+      document.getElementById('fileName').textContent = name;
     }
 
-    const dz = document.getElementById('dropZone');
-    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('dragover'); });
-    dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
-    dz.addEventListener('drop',      e  => { e.preventDefault(); dz.classList.remove('dragover'); });
-
-    function startScan(e) {
+    function handleDrop(e) {
       e.preventDefault();
-      const form    = document.getElementById('mainForm');
-      const overlay = document.getElementById('scanOverlay');
-      overlay.classList.add('active');
-
-      const terminal = document.getElementById('terminalLog');
-      const fill     = document.getElementById('progressFill');
-      const pctLabel = document.getElementById('progressPct');
-      terminal.innerHTML = '';
-
-      const logs = [
-        { text: '> Initialising C analysis engine...', cls: '',      delay: 0    },
-        { text: '> Loading linguistic model....',       cls: 'blue',  delay: 600  },
-        { text: '> Tokenising input document....',      cls: '',      delay: 1100 },
-        { text: '> Scanning sentence patterns....',     cls: 'blue',  delay: 1600 },
-        { text: '> Computing vocab richness....',        cls: '',      delay: 2100 },
-        { text: '> Measuring filler-word ratio....',    cls: 'blue',  delay: 2600 },
-        { text: '> Calculating AI composite score....', cls: 'amber', delay: 3100 },
-        { text: '> Verdict ready ✓',                    cls: 'green', delay: 3600 },
-      ];
-
-      const progressSteps = [
-        { pct: 8,   delay: 100  },
-        { pct: 22,  delay: 700  },
-        { pct: 40,  delay: 1200 },
-        { pct: 55,  delay: 1700 },
-        { pct: 70,  delay: 2200 },
-        { pct: 84,  delay: 2700 },
-        { pct: 94,  delay: 3200 },
-        { pct: 100, delay: 3700 },
-      ];
-
-      function typeWriter(element, text, speed = 28) {
-        let i = 0;
-        const interval = setInterval(() => {
-          element.textContent = text.slice(0, i);
-          i++;
-          if (i > text.length) clearInterval(interval);
-        }, speed);
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = document.getElementById('fileInput');
+        const dt    = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        document.getElementById('fileName').textContent = file.name;
       }
-
-      logs.forEach(({ text, cls, delay }) => {
-        setTimeout(() => {
-          const line = document.createElement('div');
-          line.className = 'line ' + cls;
-          terminal.appendChild(line);
-          terminal.scrollTop = terminal.scrollHeight;
-          typeWriter(line, text);
-        }, delay);
-      });
-
-      progressSteps.forEach(({ pct, delay }) => {
-        setTimeout(() => {
-          fill.style.width     = pct + '%';
-          pctLabel.textContent = pct + '%';
-        }, delay);
-      });
-
-      setTimeout(() => form.submit(), 4200);
     }
   </script>
-
 </body>
 </html>
