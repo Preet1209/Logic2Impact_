@@ -1,0 +1,18 @@
+========================================
+Time     : 2026-06-05 09:55:45
+Source   : ai_sample.txt
+Words    : 192 | Sentences: 13 | Unique: 142 | Fillers: 5
+Avg Sent : 14.77 | Vocab: 73.96% | Filler: 2.60%
+Score    : 30.0%
+Verdict  : LIKELY HUMAN-WRITTEN
+========================================
+
+========================================
+Time     : 2026-06-05 09:55:54
+Source   : human_sample.txt
+Words    : 127 | Sentences: 4 | Unique: 66 | Fillers: 0
+Avg Sent : 31.75 | Vocab: 51.97% | Filler: 0.00%
+Score    : 35.0%
+Verdict  : LIKELY HUMAN-WRITTEN
+========================================
+
